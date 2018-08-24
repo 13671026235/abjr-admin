@@ -1,0 +1,10 @@
+@import '~iview/src/styles/index.less';
+
+@menu-dark-title: #001529;
+@menu-dark-active-bg: #000c17;
+@layout-sider-background: #001529;
+
+//inline元素的间距,由于vue绘制模板时会合并模板中的行，所以缺省的间距消失了，在inline元素的容器上设置该css类，将为子元素分配间距
+.inline-space > * {
+  margin-right:4px;
+}
