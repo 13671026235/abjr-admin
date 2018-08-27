@@ -9,7 +9,8 @@
 
 <script>
 import Tables from '_c/tables'
-import { getTableData } from '@/api/data'
+import { doCustomTimes } from '@/libs/util'
+
 export default {
   name: 'tables_page',
   components: {
@@ -59,9 +60,15 @@ export default {
     }
   },
   mounted () {
-    getTableData().then(res => {
-      this.tableData = res.data
+    let tableData = []
+    doCustomTimes(5, () => {
+      tableData.push({
+        name: 'ZhangSan',
+        email: 'zhangsan@email.com',
+        createTime: new Date()
+      })
     })
+    this.tableData = tableData
   }
 }
 </script>

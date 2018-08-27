@@ -1,4 +1,4 @@
-import { login, logout, getUserInfo } from '@/api/user'
+import axios from '@/libs/api.request'
 import { setToken, getToken, removeToken } from '@/libs/util'
 
 export default {
@@ -40,9 +40,13 @@ export default {
     handleLogin ({ commit }, {username, password}) {
       username = username.trim()
       return new Promise((resolve, reject) => {
-        login({
-          username,
-          password
+        axios.request({
+          url: 'session',
+          data: {
+            username,
+            password
+          },
+          method: 'post'
         }).then(res => {
           const data = res.data
           let token = data.accessToken
@@ -58,7 +62,10 @@ export default {
     // 退出登录
     handleLogOut ({ state, commit }) {
       return new Promise((resolve, reject) => {
-        logout().then(() => {
+        axios.request({
+          url: 'session',
+          method: 'delete'
+        }).then(() => {
           commit('removeToken')
           resolve()
         }).catch(err => {
@@ -73,7 +80,10 @@ export default {
     // 获取用户相关信息
     getUserInfo ({ state, commit }) {
       return new Promise((resolve, reject) => {
-        getUserInfo().then(res => {
+        axios.request({
+          url: 'session/user',
+          method: 'get'
+        }).then(res => {
           const data = res.data
           commit('setAvator', data.avator)
           commit('setUsername', data.name)
