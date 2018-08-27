@@ -27,7 +27,8 @@ export default [
     component: Main,
     meta: {
       hideInMenu: true,
-      notCache: true
+      notCache: true,
+      title: '首页'
     },
     children: [
       {
@@ -228,6 +229,77 @@ export default [
     ]
   },
   {
+    path: '/sys',
+    name: 'sys',
+    meta: {
+      icon: 'md-menu',
+      title: '系统管理'
+    },
+    component: Main,
+    children: [
+      {
+        path: 'user-list',
+        name: 'user-list',
+        meta: {
+          icon: 'arrow-graph-up-right',
+          title: '用户管理'
+        },
+        component: () => import('@/view/modules/sys/user/list.vue')
+      },
+      {
+        path: 'user/:id?',
+        name: 'user',
+        props: true,
+        meta: {
+          title: '用户',
+          icon: 'arrow-graph-up-right',
+          hideInMenu: true
+        },
+        component: () => import('@/view/modules/sys/user/card.vue')
+      },
+      {
+        path: 'permission-list',
+        name: 'permission-list',
+        meta: {
+          icon: 'arrow-graph-up-right',
+          title: '权限管理'
+        },
+        component: () => import('@/view/modules/sys/permission/list.vue')
+      },
+      {
+        path: 'permission/:id?',
+        name: 'permission',
+        props: true,
+        meta: {
+          title: '权限',
+          icon: 'arrow-graph-up-right',
+          hideInMenu: true
+        },
+        component: () => import('@/view/modules/sys/permission/card.vue')
+      },
+      {
+        path: 'role-list',
+        name: 'role-list',
+        meta: {
+          icon: 'arrow-graph-up-right',
+          title: '角色管理'
+        },
+        component: () => import('@/view/modules/sys/role/list.vue')
+      },
+      {
+        path: 'role/:id?',
+        name: 'role',
+        props: true,
+        meta: {
+          title: '角色',
+          icon: 'arrow-graph-up-right',
+          hideInMenu: true
+        },
+        component: () => import('@/view/modules/sys/role/card.vue')
+      }
+    ]
+  },
+  {
     path: '/401',
     name: 'error_401',
     meta: {
@@ -250,75 +322,5 @@ export default [
       hideInMenu: true
     },
     component: () => import('@/view/error-page/404.vue')
-  },
-  {
-    path: '/sys',
-    name: 'sys',
-    meta: {
-      icon: 'md-menu',
-      title: '系统管理'
-    },
-    component: Main,
-    children: [
-      {
-        path: 'user-list',
-        name: 'user-list',
-        meta: {
-          icon: 'arrow-graph-up-right',
-          title: '用户列表'
-        },
-        component: () => import('@/view/modules/sys/user/list.vue')
-      },
-      {
-        path: 'user/:id?',
-        name: 'user',
-        props: true,
-        meta: {
-          title: '用户',
-          icon: 'arrow-graph-up-right',
-          hideInMenu: false
-        },
-        component: () => import('@/view/modules/sys/user/card.vue')
-      },
-      {
-        path: 'permission-list',
-        name: 'permission-list',
-        meta: {
-          icon: 'arrow-graph-up-right',
-          title: '权限列表'
-        },
-        component: () => import('@/view/modules/sys/permission/list.vue')
-      },
-      {
-        path: 'permission/:id?',
-        name: 'permission',
-        props: true,
-        meta: {
-          title: '权限',
-          icon: 'arrow-graph-up-right',
-          hideInMenu: false
-        },
-        component: () => import('@/view/modules/sys/permission/card.vue')
-      },
-      {
-        path: 'role-list',
-        name: 'role-list',
-        meta: {
-          icon: 'arrow-graph-up-right',
-          title: '角色列表'
-        },
-        component: () => import('@/view/modules/sys/role/list.vue')
-      },
-      {
-        path: 'role/:id?',
-        name: 'role',
-        props: true,
-        meta: {
-          title: '角色',
-          icon: 'arrow-graph-up-right',
-          hideInMenu: false
-        },
-        component: () => import('@/view/modules/sys/role/card.vue')
-      }
-    ]
-  }]
+  }
+]

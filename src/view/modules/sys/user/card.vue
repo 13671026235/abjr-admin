@@ -22,8 +22,10 @@
                   <i-switch v-model="user.status" :true-value="'Y'" :false-value="'N'"/>
               </FormItem>
               <FormItem>
+                <div class="inline-space">
                   <Button type="primary" @click="save('form')">保存</Button>
                   <Button @click="cancel()">取消</Button>
+                </div>
               </FormItem>
           </Form>
     </div>
@@ -105,20 +107,30 @@ export default {
     },
     back: function () {
       this.$router.go(-1)
-    }
-  },
-  created: function () {
-    if (this.id) {
+    },
+    getUser (id) {
       axios.request({
         method: 'get',
-        url: `/sys/user/${this.id}`
+        url: `/sys/user/${id}`
       }).then(response => {
         this.user = response.data
       })
+    }
+  },
+  created () {
+    if (this.id) {
+      this.getUser(this.id)
     } else {
       this.ruleValidate.password = [
         { required: true, message: '请输入密码', trigger: 'blur' }
       ]
+    }
+  },
+  watch: {
+    $route: function (newValue, oldValue) {
+      if (newValue.name === 'user') {
+        this.getUser(newValue.params.id)
+      }
     }
   }
 }

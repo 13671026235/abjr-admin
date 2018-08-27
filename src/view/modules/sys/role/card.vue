@@ -87,19 +87,29 @@ export default {
     },
     back: function () {
       this.$router.go(-1)
-    }
-  },
-  created: function () {
-    if (this.id) {
+    },
+    getRole (id) {
       axios
         .request({
           method: 'get',
-          url: `/sys/role/${this.id}`
-        })
-        .then(response => {
+          url: `/sys/role/${id}`
+        }).then(response => {
           this.role = response.data
         })
     }
+  },
+  created () {
+    if (this.id) {
+      this.getRole(this.id)
+    }
+  },
+  watch: {
+    $route: function (newValue, oldValue) {
+      if (newValue.name === 'role') {
+        this.getRole(newValue.params.id)
+      }
+    }
   }
+
 }
 </script>

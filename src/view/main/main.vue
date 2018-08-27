@@ -4,8 +4,10 @@
       <side-menu accordion :active-name="$route.name" :collapsed="collapsed" @on-select="turnToPage" :menu-list="menuList">
         <!-- 需要放在菜单上面的内容，如Logo，写在side-menu标签内部，如下 -->
         <div class="logo-con">
-          <img v-show="!collapsed" :src="maxLogo" key="max-logo" />
-          <img v-show="collapsed" :src="minLogo" key="min-logo" />
+          <router-link to="/home">
+            <img v-show="!collapsed" :src="maxLogo" key="max-logo" />
+            <img v-show="collapsed" :src="minLogo" key="min-logo" />
+          </router-link>
         </div>
       </side-menu>
     </Sider>
@@ -19,11 +21,8 @@
       </Header>
       <Content>
         <Layout>
-          <div class="tag-nav-wrapper">
-            <tags-nav :value="$route" @input="handleClick" :list="tagNavList" @on-close="handleCloseTag"/>
-          </div>
           <Content class="content-wrapper">
-            <keep-alive :include="cacheList">
+            <keep-alive>
               <router-view/>
             </keep-alive>
           </Content>
@@ -35,12 +34,10 @@
 <script>
 import SideMenu from './components/side-menu'
 import HeaderBar from './components/header-bar'
-import TagsNav from './components/tags-nav'
 import User from './components/user'
 import Fullscreen from './components/fullscreen'
 import Language from './components/language'
 import { mapMutations, mapActions } from 'vuex'
-import { getNewTagList, getNextName } from '@/libs/util'
 import minLogo from '@/assets/images/logo-min.png'
 import maxLogo from '@/assets/images/logo.png'
 import './main.less'
@@ -50,7 +47,6 @@ export default {
     SideMenu,
     HeaderBar,
     Language,
-    TagsNav,
     Fullscreen,
     User
   },
@@ -63,17 +59,8 @@ export default {
     }
   },
   computed: {
-    tagNavList () {
-      return this.$store.state.app.tagNavList
-    },
-    tagRouter () {
-      return this.$store.state.app.tagRouter
-    },
     userAvator () {
       return this.$store.state.user.avatorImgPath
-    },
-    cacheList () {
-      return this.tagNavList.length ? this.tagNavList.filter(item => !(item.meta && item.meta.notCache)).map(item => item.name) : []
     },
     menuList () {
       return this.$store.getters.menuList
@@ -85,8 +72,6 @@ export default {
   methods: {
     ...mapMutations([
       'setBreadCrumb',
-      'setTagNavList',
-      'addTag',
       'setLocal'
     ]),
     ...mapActions([
@@ -103,29 +88,17 @@ export default {
     },
     handleCollapsedChange (state) {
       this.collapsed = state
-    },
-    handleCloseTag (res, type, name) {
-      const nextName = getNextName(this.tagNavList, name)
-      this.setTagNavList(res)
-      if (type === 'all') this.turnToPage('home')
-      else if (this.$route.name === name) this.$router.push({ name: nextName })
-    },
-    handleClick (item) {
-      this.turnToPage(item.name)
     }
   },
   watch: {
     '$route' (newRoute) {
       this.setBreadCrumb(newRoute.matched)
-      this.setTagNavList(getNewTagList(this.tagNavList, newRoute))
     }
   },
   mounted () {
     /**
      * @description 初始化设置面包屑导航和标签导航
      */
-    this.setTagNavList()
-    this.addTag(this.$store.state.app.homeRoute)
     this.setBreadCrumb(this.$route.matched)
     // 设置初始语言
     this.setLocal(this.$i18n.locale)

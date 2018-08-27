@@ -103,18 +103,27 @@ export default {
     },
     back: function () {
       this.$router.go(-1)
-    }
-  },
-  created: function () {
-    if (this.id) {
+    },
+    getPermission (id) {
       axios
         .request({
           method: 'get',
-          url: `/sys/permission/${this.id}`
-        })
-        .then(response => {
+          url: `/sys/permission/${id}`
+        }).then(response => {
           this.permission = response.data
         })
+    }
+  },
+  created () {
+    if (this.id) {
+      this.getPermission(this.id)
+    }
+  },
+  watch: {
+    $route: function (newValue, oldValue) {
+      if (newValue.name === 'permission') {
+        this.getPermission(newValue.params.id)
+      }
     }
   }
 }

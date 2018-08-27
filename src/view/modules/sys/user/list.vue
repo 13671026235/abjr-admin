@@ -21,11 +21,11 @@
                 </Select>
             </FormItem>
           </Row>
-          <Row style="padding:10px 0">
+          <Row style="padding:10px 0" class="inline-space">
               <Button type="primary" icon="ios-plus-outline" @click="addUser()">新增</Button>
               <Button type="primary" icon="ios-minus-outline" @click="deleteUser()">删除</Button>
-              <div style="float:right">
-                  <Button type="primary" icon="ios-search" @click="search(1)">查 询</Button>
+              <div style="float:right" class="inline-space">
+                  <Button type="primary" icon="ios-search" @click="search(1,condition.pageSize)">查 询</Button>
                   <Button icon="ios-refresh-empty" @click="reset()">重置</Button>
               </div>
           </Row>
@@ -145,26 +145,44 @@ export default {
   },
   methods: {
     goPage: function (pageNum) {
-      this.search(pageNum)
+      this.search(pageNum, this.condition.pageSize)
+    },
+    changePageSize: function (pageSize) {
+      this.search(this.condition.pageNum, pageSize)
     },
     changeCurrentRow: function (currentRow) {
       this.currentItem = currentRow
     },
-    changePageSize: function (pageSize) {
-      this.search(null, pageSize)
-    },
     search: function (pageNum, pageSize) {
-      if (pageNum) {
-        this.condition.pageNum = pageNum
+      let query = {}
+      query.username = this.condition.username
+      query.realname = this.condition.realname
+      query.mobile = this.condition.mobile
+      query.pageNum = pageNum
+      query.pageSize = pageSize
+
+      this.$router.replace({name: 'user-list', query})
+    },
+    searchUserList: function () {
+      let query = {...this.$route.query}
+      if (query.pageNum) {
+        query.pageNum = parseInt(query.pageNum)
+      } else {
+        query.pageNum = 1
       }
-      if (pageSize) {
-        this.condition.pageSize = pageSize
+      if (query.pageSize) {
+        query.pageSize = parseInt(query.pageSize)
+      } else {
+        query.pageSize = 10
       }
+
+      this.condition = query
+
       axios
         .request({
           method: 'get',
           url: '/sys/user',
-          params: this.condition
+          params: query
         })
         .then(res => {
           this.userList = res.data
@@ -195,7 +213,7 @@ export default {
             url: `/sys/user/${this.currentItem.id}`
           }).then(res => {
             this.$Message.success(this.currentItem.username + '用户已删除！')
-            this.search()
+            this.search(this.condition.pageNum, this.condition.pageSize)
           })
         }
       })
@@ -218,8 +236,11 @@ export default {
         })
     }
   },
-  mounted: function () {
-    this.search()
+  created () {
+    this.searchUserList()
+  },
+  watch: {
+    '$route': 'searchUserList'
   }
 }
 </script>

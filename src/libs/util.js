@@ -67,12 +67,9 @@ export const getBreadCrumbList = (routeMetched) => {
     return obj
   })
   res = res.filter(item => {
-    return !item.meta.hideInMenu
+    return !item.meta.hideInMenu || item.name === 'home'
   })
-  return [{
-    name: 'home',
-    to: '/home'
-  }, ...res]
+  return [...res]
 }
 
 export const showTitle = (item, vm) => vm.$config.useI18n ? vm.$t(item.name) : ((item.meta && item.meta.title) || item.name)

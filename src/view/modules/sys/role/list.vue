@@ -18,7 +18,7 @@
                       <Button type="primary" icon="ios-list-outline" @click="openAssignPermissionDialog()">分配权限</Button>
                       <Button type="primary" icon="ios-person-outline" @click="openAssignUserDialog()">分配用户</Button>
                       <div style="float:right"  class="inline-space">
-                          <Button type="primary" icon="ios-search" @click="search(1)">查 询</Button>
+                          <Button type="primary" icon="ios-search" @click="search(1,condition.pageSize)">查 询</Button>
                           <Button icon="ios-refresh-empty" @click="reset()">重置</Button>
                       </div>
                   </Row>
@@ -141,35 +141,48 @@ export default {
       return this.roleList.list
     }
   },
-  mounted: function () {
-    this.search()
-  },
   methods: {
-    'goPage': function (pageNum) {
-      this.search(pageNum)
+    goPage: function (pageNum) {
+      this.search(pageNum, this.condition.pageSize)
     },
-    'changePageSize': function (pageSize) {
-      this.search(null, pageSize)
+    changePageSize: function (pageSize) {
+      this.search(this.condition.pageNum, pageSize)
     },
-    'changeCurrentRow': function (currentRow) {
+    changeCurrentRow: function (currentRow) {
       this.currentItem = currentRow
     },
-    'search': function (pageNum, pageSize) {
-      if (pageNum) {
-        this.condition.pageNum = pageNum
+    search: function (pageNum, pageSize) {
+      let query = {}
+      query.code = this.condition.code
+      query.name = this.condition.name
+      query.pageNum = pageNum
+      query.pageSize = pageSize
+
+      this.$router.replace({name: 'role-list', query})
+    },
+    searchRoleList: function () {
+      let query = {...this.$route.query}
+      if (query.pageNum) {
+        query.pageNum = parseInt(query.pageNum)
+      } else {
+        query.pageNum = 1
       }
-      if (pageSize) {
-        this.condition.pageSize = pageSize
+      if (query.pageSize) {
+        query.pageSize = parseInt(query.pageSize)
+      } else {
+        query.pageSize = 10
       }
+
+      this.condition = query
+
       axios.request({
         method: 'get',
         url: '/sys/role',
-        params: this.condition
+        params: query
+      }).then(response => {
+        this.roleList = response.data
+        this.currentItem = null
       })
-        .then(response => {
-          this.roleList = response.data
-          this.currentItem = null
-        })
     },
     'reset': function (name) {
       var c = {'pageNum': this.condition.pageNum, 'pageSize': this.condition.pageSize}
@@ -210,7 +223,7 @@ export default {
             url: `/sys/role/${this.currentItem.id}`
           }).then(response => {
             this.$Message.success(this.currentItem.roleName + '角色已删除！')
-            this.search()
+            this.search(this.condition.pageNum, this.condition.pageSize)
           })
         }})
     },
@@ -229,6 +242,16 @@ export default {
       }
 
       this.showAssignUserDialog = true
+    }
+  },
+  created () {
+    this.searchRoleList()
+  },
+  watch: {
+    '$route': function (newValue, oldValue) {
+      if (newValue.name === 'role-list') {
+        this.searchRoleList()
+      }
     }
   }
 }
