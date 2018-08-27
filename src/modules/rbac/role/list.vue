@@ -44,7 +44,7 @@
 import moment from 'moment'
 import axios from '@/libs/api.request'
 import qs from 'qs'
-import RoleCard from '@/view/modules/sys/role/card.vue'
+import RoleCard from './card.vue'
 import AssignUserDialog from './assign-user-dialog.vue'
 import AssignPermissionDialog from './assign-permission-dialog.vue'
 

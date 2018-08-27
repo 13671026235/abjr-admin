@@ -42,7 +42,7 @@
 <script>
 import moment from 'moment'
 import axios from '@/libs/api.request'
-import UserCard from '@/view/modules/sys/user/card.vue'
+import UserCard from './card.vue'
 
 export default {
   name: 'user_list',

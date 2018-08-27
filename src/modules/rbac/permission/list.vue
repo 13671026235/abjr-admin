@@ -36,7 +36,7 @@
 import moment from 'moment'
 import axios from '@/libs/api.request'
 import qs from 'qs'
-import PermissionCard from '@/view/modules/sys/permission/card.vue'
+import PermissionCard from './card.vue'
 
 export default {
   name: 'permission_list',
