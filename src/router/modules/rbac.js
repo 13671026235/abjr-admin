@@ -11,7 +11,7 @@ export default {
   children: [
     {
       path: 'user-list',
-      name: 'user-list',
+      name: 'userList',
       meta: {
         icon: 'arrow-graph-up-right',
         title: '系统用户'
@@ -31,7 +31,7 @@ export default {
     },
     {
       path: 'permission-list',
-      name: 'permission-list',
+      name: 'permissionList',
       meta: {
         icon: 'arrow-graph-up-right',
         title: '系统权限'
@@ -51,7 +51,7 @@ export default {
     },
     {
       path: 'role-list',
-      name: 'role-list',
+      name: 'roleList',
       meta: {
         icon: 'arrow-graph-up-right',
         title: '系统角色'

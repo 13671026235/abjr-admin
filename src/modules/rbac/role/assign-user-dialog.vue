@@ -34,7 +34,7 @@ export default {
     initUserList: function () {
       axios.request({
         method: 'get',
-        url: '/sys/user'
+        url: '/rbac/user'
       }).then(response => {
         for (let user of response.data.list) {
           user.key = '' + user.id
@@ -45,7 +45,7 @@ export default {
     initSelectedUserIdList () {
       axios.request({
         method: 'get',
-        url: `/sys/role/${this.role.id}/user`
+        url: `/rbac/role/${this.role.id}/user`
       }).then(response => {
         var selectedIds = []
         for (var i in response.data) {
@@ -60,7 +60,7 @@ export default {
         onOk: () => {
           axios.request({
             method: 'patch',
-            url: `/sys/role/${this.role.id}/user`,
+            url: `/rbac/role/${this.role.id}/user`,
             data: this.selectedUserIdList
           }).then(response => {
             this.$Message.success('成功保存！')

@@ -85,10 +85,10 @@ export default {
             status: this.user.status
           }
           if (this.user.id) {
-            opt.url = `/sys/user/${this.user.id}`
+            opt.url = `/rbac/user/${this.user.id}`
             opt.method = 'put'
           } else {
-            opt.url = `/sys/user`
+            opt.url = `/rbac/user`
             opt.method = 'post'
           }
           axios
@@ -111,7 +111,7 @@ export default {
     getUser (id) {
       axios.request({
         method: 'get',
-        url: `/sys/user/${id}`
+        url: `/rbac/user/${id}`
       }).then(response => {
         this.user = response.data
       })

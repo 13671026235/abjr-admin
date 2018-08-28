@@ -34,7 +34,7 @@ export default {
     initPermissionList: function () {
       axios.request({
         method: 'get',
-        url: '/sys/permission'
+        url: '/rbac/permission'
       }).then(response => {
         for (let permission of response.data.list) {
           permission.key = '' + permission.id
@@ -45,7 +45,7 @@ export default {
     initSelectedPermissionIdList () {
       axios.request({
         method: 'get',
-        url: `/sys/role/${this.role.id}/permission`
+        url: `/rbac/role/${this.role.id}/permission`
       }).then(response => {
         var selectedIds = []
         for (var i in response.data) {
@@ -60,7 +60,7 @@ export default {
         onOk: () => {
           axios.request({
             method: 'patch',
-            url: `/sys/role/${this.role.id}/permission`,
+            url: `/rbac/role/${this.role.id}/permission`,
             data: this.selectedPermissionIdList
           }).then(response => {
             this.$Message.success('成功保存！')

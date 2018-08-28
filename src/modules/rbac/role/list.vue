@@ -44,14 +44,11 @@
 import moment from 'moment'
 import axios from '@/libs/api.request'
 import qs from 'qs'
-import RoleCard from './card.vue'
 import AssignUserDialog from './assign-user-dialog.vue'
 import AssignPermissionDialog from './assign-permission-dialog.vue'
 
 export default {
-  name: 'role_list',
   components: {
-    RoleCard,
     AssignUserDialog,
     AssignPermissionDialog
   },
@@ -158,7 +155,7 @@ export default {
       query.pageNum = pageNum
       query.pageSize = pageSize
 
-      this.$router.replace({name: 'role-list', query})
+      this.$router.replace({name: 'roleList', query})
     },
     searchRoleList: function () {
       let query = {...this.$route.query}
@@ -177,7 +174,7 @@ export default {
 
       axios.request({
         method: 'get',
-        url: '/sys/role',
+        url: '/rbac/role',
         params: query
       }).then(response => {
         this.roleList = response.data
@@ -195,7 +192,7 @@ export default {
       let data = {status1: status}
       axios.request({
         method: 'patch',
-        url: `/sys/role/${item.id}/status`,
+        url: `/rbac/role/${item.id}/status`,
         headers: {
           'Content-Type': 'application/x-www-form-urlencoded'
         },
@@ -220,10 +217,10 @@ export default {
         onOk: () => {
           axios.request({
             method: 'delete',
-            url: `/sys/role/${this.currentItem.id}`
+            url: `/rbac/role/${this.currentItem.id}`
           }).then(response => {
             this.$Message.success(this.currentItem.roleName + '角色已删除！')
-            this.search(this.condition.pageNum, this.condition.pageSize)
+            this.searchUserList()
           })
         }})
     },
@@ -249,13 +246,10 @@ export default {
   },
   watch: {
     '$route': function (newValue, oldValue) {
-      if (newValue.name === 'role-list') {
+      if (newValue.name === 'roleList') {
         this.searchRoleList()
       }
     }
   }
 }
 </script>
-
-<style lang="less">
-</style>

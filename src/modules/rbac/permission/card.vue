@@ -76,10 +76,10 @@ export default {
           }
 
           if (this.permission.id) {
-            opt.url = `/sys/permission/${this.permission.id}`
+            opt.url = `/rbac/permission/${this.permission.id}`
             opt.method = 'put'
           } else {
-            opt.url = '/sys/permission'
+            opt.url = '/rbac/permission'
             opt.method = 'post'
           }
           axios
@@ -108,7 +108,7 @@ export default {
       axios
         .request({
           method: 'get',
-          url: `/sys/permission/${id}`
+          url: `/rbac/permission/${id}`
         }).then(response => {
           this.permission = response.data
         })

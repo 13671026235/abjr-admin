@@ -42,13 +42,8 @@
 <script>
 import moment from 'moment'
 import axios from '@/libs/api.request'
-import UserCard from './card.vue'
 
 export default {
-  name: 'user_list',
-  components: {
-    UserCard
-  },
   data () {
     return {
       condition: {
@@ -161,7 +156,7 @@ export default {
       query.pageNum = pageNum
       query.pageSize = pageSize
 
-      this.$router.replace({name: 'user-list', query})
+      this.$router.replace({name: 'userList', query})
     },
     searchUserList: function () {
       let query = {...this.$route.query}
@@ -181,7 +176,7 @@ export default {
       axios
         .request({
           method: 'get',
-          url: '/sys/user',
+          url: '/rbac/user',
           params: query
         })
         .then(res => {
@@ -210,10 +205,10 @@ export default {
         onOk: () => {
           axios.request({
             method: 'delete',
-            url: `/sys/user/${this.currentItem.id}`
+            url: `/rbac/user/${this.currentItem.id}`
           }).then(res => {
             this.$Message.success(this.currentItem.username + '用户已删除！')
-            this.search(this.condition.pageNum, this.condition.pageSize)
+            this.searchUserList()
           })
         }
       })
@@ -225,7 +220,7 @@ export default {
       axios
         .request({
           method: 'patch',
-          url: `/sys/user/${item.id}/status`,
+          url: `/rbac/user/${item.id}/status`,
           headers: {
             'Content-Type': 'application/x-www-form-urlencoded'
           },
@@ -240,7 +235,11 @@ export default {
     this.searchUserList()
   },
   watch: {
-    '$route': 'searchUserList'
+    $route: function (newValue, oldValue) {
+      if (newValue.name === 'userList') {
+        this.searchUserList()
+      }
+    }
   }
 }
 </script>

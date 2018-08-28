@@ -60,10 +60,10 @@ export default {
           }
 
           if (this.role.id) {
-            opt.url = `/sys/role/${this.role.id}`
+            opt.url = `/rbac/role/${this.role.id}`
             opt.method = 'put'
           } else {
-            opt.url = '/sys/role'
+            opt.url = '/rbac/role'
             opt.method = 'post'
           }
           axios
@@ -92,7 +92,7 @@ export default {
       axios
         .request({
           method: 'get',
-          url: `/sys/role/${id}`
+          url: `/rbac/role/${id}`
         }).then(response => {
           this.role = response.data
         })
@@ -106,7 +106,9 @@ export default {
   watch: {
     $route: function (newValue, oldValue) {
       if (newValue.name === 'role') {
-        this.getRole(newValue.params.id)
+        if (newValue.params.id) {
+          this.getRole(newValue.params.id)
+        }
       }
     }
   }

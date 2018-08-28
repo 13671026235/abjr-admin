@@ -36,13 +36,8 @@
 import moment from 'moment'
 import axios from '@/libs/api.request'
 import qs from 'qs'
-import PermissionCard from './card.vue'
 
 export default {
-  name: 'permission_list',
-  components: {
-    PermissionCard
-  },
   data () {
     return {
       'condition': {
@@ -144,7 +139,7 @@ export default {
       query.pageNum = pageNum
       query.pageSize = pageSize
 
-      this.$router.replace({name: 'permission-list', query})
+      this.$router.replace({name: 'permissionList', query})
     },
     searchPermissionList: function () {
       let query = {...this.$route.query}
@@ -163,7 +158,7 @@ export default {
 
       axios.request({
         method: 'get',
-        url: '/sys/permission',
+        url: '/rbac/permission',
         params: query
       }).then(response => {
         this.permissionList = response.data
@@ -181,7 +176,7 @@ export default {
       let data = {status1: status}
       axios.request({
         method: 'patch',
-        url: `/sys/permission/${item.id}/status`,
+        url: `/rbac/permission/${item.id}/status`,
         headers: {
           'Content-Type': 'application/x-www-form-urlencoded'
         },
@@ -206,10 +201,10 @@ export default {
         onOk: () => {
           axios.request({
             method: 'delete',
-            url: `/sys/permission/${this.currentItem.id}`
+            url: `/rbac/permission/${this.currentItem.id}`
           }).then(response => {
             this.$Message.success(this.currentItem.permissionName + '权限已删除！')
-            this.search(this.condition.pageNum, this.condition.pageSize)
+            this.searchUserList()
           })
         }})
     }
@@ -219,13 +214,10 @@ export default {
   },
   watch: {
     '$route': function (newValue, oldValue) {
-      if (newValue.name === 'permission-list') {
+      if (newValue.name === 'permissionList') {
         this.searchPermissionList()
       }
     }
   }
 }
 </script>
-
-<style lang="less">
-</style>

@@ -5,6 +5,7 @@ import uc from './modules/uc'
 import point from './modules/point'
 import mc from './modules/mc'
 import examples from './modules/examples'
+import monitor from './modules/monitor'
 /**
  * iview-admin中meta除了原生参数外可配置的参数:
  * meta: {
@@ -51,6 +52,7 @@ export default [
   point,
   config,
   rbac,
+  monitor,
   examples,
   {
     path: '/401',

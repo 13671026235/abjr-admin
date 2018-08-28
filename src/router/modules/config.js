@@ -10,8 +10,8 @@ export default {
   component: Main,
   children: [
     {
-      path: 'dict-list',
-      name: 'dict-list',
+      path: 'dict',
+      name: 'dict',
       meta: {
         icon: 'arrow-graph-up-right',
         title: '数据字典'
@@ -19,13 +19,35 @@ export default {
       component: () => import('@/modules/config/dict')
     },
     {
-      path: 'param-list',
-      name: 'param-list',
+      path: 'dict-entry/:category/:id?',
+      name: 'dictEntry',
+      props: true,
+      meta: {
+        icon: 'arrow-graph-up-right',
+        title: '字典条目',
+        hideInMenu: true
+      },
+      component: () => import('@/modules/config/dict/card.vue')
+    },
+    {
+      path: 'param',
+      name: 'param',
       meta: {
         icon: 'arrow-graph-up-right',
         title: '系统参数'
       },
       component: () => import('@/modules/config/param')
+    },
+    {
+      path: 'param-entry/:category/:id?',
+      name: 'paramEntry',
+      props: true,
+      meta: {
+        icon: 'arrow-graph-up-right',
+        title: '系统参数',
+        hideInMenu: true
+      },
+      component: () => import('@/modules/config/param/card.vue')
     }
   ]
 }
