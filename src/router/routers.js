@@ -1,6 +1,6 @@
 import Main from '@/modules/common/main'
-import config from './modules/config'
-import rbac from './modules/rbac'
+import settings from './modules/settings'
+import security from './modules/security'
 import uc from './modules/uc'
 import point from './modules/point'
 import mc from './modules/mc'
@@ -50,8 +50,8 @@ export default [
   mc,
   uc,
   point,
-  config,
-  rbac,
+  settings,
+  security,
   monitor,
   examples,
   {
