@@ -27,6 +27,9 @@ module.exports = {
   // https://www.foobar.com/my-app/
   // then change this to '/my-app/'
   baseUrl: BASE_URL,
+  devServer: {
+    port: 9090
+  },
   css: {
     loaderOptions: {
       // pass options to less-loader
