@@ -127,13 +127,16 @@ export const getNewTagList = (list, newRoute) => {
  */
 const hasAccess = (access, route) => {
   if (route.meta && route.meta.access) {
-    if (access == null) return false
-    return hasOneOf(access, route.meta.access)
+    return hasPermission(access, route.meta.access)
   } else {
     return true
   }
 }
 
+export const hasPermission = (permssions, permission) => {
+  if (permssions == null) return false
+  return hasOneOf(permssions, permission)
+}
 /**
  * 权鉴
  * @param {*} name 即将跳转的路由name

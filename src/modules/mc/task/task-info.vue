@@ -44,7 +44,7 @@
 
 <script>
 export default {
-  name: 'approve-dialog',
+  name: 'task-info',
   props: {
     task: Object
   }

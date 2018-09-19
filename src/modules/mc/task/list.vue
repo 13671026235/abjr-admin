@@ -13,7 +13,7 @@
               <Input type="text" v-model="condition.keyword" placeholder="关键词" style="width: 200px"/>
           </FormItem>
           <FormItem label="创建日期">
-              <DatePicker type="daterange" v-model="temp.daterange" placement="bottom-end" placeholder="创建日期" style="width: 200px" @on-change="changeCreatedDate"></DatePicker>
+              <DatePicker type="daterange" v-model="condition.createDateRange" placement="bottom-end" placeholder="创建日期" style="width: 200px"></DatePicker>
           </FormItem>
           <FormItem label="消息分类">
               <Select v-model="condition.msgCategory" style="width:200px" >
@@ -42,10 +42,10 @@
               <Input type="text" v-model="condition.user" placeholder="目标用户" style="width: 200px"/>
           </FormItem>
         </Row>
-        <Row style="padding:10px 0">
+        <Row style="padding:10px 0" class="inline-space">
             <Button type="primary" icon="ios-plus-outline" @click="addTask()">新增</Button>
             <Button type="primary" icon="ios-minus-outline" @click="deleteTask()">删除</Button>
-            <div style="float:right">
+            <div style="float:right" class="inline-space">
                 <Button type="primary" icon="ios-search" @click="search(1,condition.pageSize)">查 询</Button>
                 <Button icon="ios-refresh-empty" @click="reset()">重置</Button>
             </div>
@@ -62,28 +62,32 @@
 </template>
 
 <script>
+
 import moment from 'moment'
 import mcApi from '../api'
 import axios from '@/libs/api.request'
-import ApproveDialog from './approveDialog.vue'
-import ExtendRow from './extendRow.vue'
+import ApproveDialog from './approve-dialog.vue'
+import TaskInfo from './task-info.vue'
+import store from '@/store'
+import { hasPermission } from '@/libs/util'
 
 export default {
   components: {
     ApproveDialog,
-    ExtendRow
+    TaskInfo
   },
   data () {
     return {
-      condition: {
+      defaultCondition: {
         pageNum: 1,
         pageSize: 10,
         taskType: 'manual',
         taskStatus: null,
         sendType: null,
-        msgCategory: null
+        msgCategory: null,
+        createDateRange: null
       },
-      temp: { daterange: null },
+      condition: {...this.defaultCondition},
       showApproveDialog: false,
       currentItem: null,
       msgCategory: [],
@@ -105,7 +109,7 @@ export default {
           type: 'expand',
           width: 50,
           render: function (h, params) {
-            return h('extend-row', {
+            return h(TaskInfo, {
               props: {
                 task: params.row
               }
@@ -135,14 +139,13 @@ export default {
           key: 'msgCategory',
           width: 90,
           render: (h, params) => {
-            var i
-            for (i in this.msgCategory) {
-              var item = this.msgCategory[i]
+            for (let i in this.msgCategory) {
+              let item = this.msgCategory[i]
               if (item.code === params.row.msgCategory) {
-                return item.name
+                return h('span', item.name)
               }
             }
-            return params.row.msgCategory
+            return h('span', params.row.msgCategory)
           }
         },
         {
@@ -150,14 +153,13 @@ export default {
           key: 'msgCase',
           width: 90,
           render: (h, params) => {
-            let i
-            for (i in this.msgCase) {
+            for (let i in this.msgCase) {
               let item = this.msgCase[i]
               if (item.code === params.row.msgCase) {
-                return item.name
+                return h('span', item.name)
               }
             }
-            return params.row.msgCase
+            return h('span', params.row.msgCase)
           }
         },
         {
@@ -165,14 +167,13 @@ export default {
           key: 'msgClient',
           width: 90,
           render: (h, params) => {
-            let i
-            for (i in this.msgClient) {
+            for (let i in this.msgClient) {
               let item = this.msgClient[i]
               if (item.code === params.row.msgClient) {
-                return item.name
+                return h('span', item.name)
               }
             }
-            return params.row.msgClient
+            return h('span', params.row.msgClient)
           }
         },
         {
@@ -180,11 +181,11 @@ export default {
           width: 120,
           render: (h, params) => {
             if (params.row.users) {
-              return params.row.users
+              return h('span', params.row.users)
             } else if (params.row.userGroupId === 0) {
-              return '全部用户'
+              return h('span', '全部用户')
             } else {
-              return '定向发送'
+              return h('span', '定向发送')
             }
           }
         },
@@ -194,9 +195,9 @@ export default {
           width: 120,
           render: (h, params) => {
             if (params.row.sendType === 'real') {
-              return '实时'
+              return h('span', '实时')
             } else if (params.row.sendType === 'timing') {
-              return '定时'
+              return h('span', '定时')
             }
           }
         },
@@ -205,7 +206,7 @@ export default {
           width: 100,
           render: (h, params) => {
             if (params.row.sendTime) {
-              return moment(params.row.sendTime).format('YYYY-MM-DD HH:mm:ss')
+              return h('span', moment(params.row.sendTime).format('YYYY-MM-DD HH:mm:ss'))
             }
           }
         },
@@ -214,7 +215,7 @@ export default {
           width: 100,
           render: (h, params) => {
             if (params.row.createdAt) {
-              return moment(params.row.createdAt).format('YYYY-MM-DD HH:mm:ss')
+              return h('span', moment(params.row.createdAt).format('YYYY-MM-DD HH:mm:ss'))
             }
           }
         },
@@ -224,15 +225,15 @@ export default {
           render: (h, params) => {
             switch (params.row.taskStatus) {
               case 'draft':
-                return '草稿'
+                return h('span', '草稿')
               case 'auditable':
-                return '待审批'
+                return h('span', '待审批')
               case 'waiting':
-                return '等待执行'
+                return h('span', '等待执行')
               case 'running':
-                return '执行中'
+                return h('span', '执行中')
               case 'finish':
-                return '执行完成'
+                return h('span', '执行完成')
             }
           }
         },
@@ -243,7 +244,7 @@ export default {
             var ops = []
             if (
               params.row.taskStatus === 'auditable' &&
-              this.hasPermission('Task:Approve')
+              hasPermission(store.state.user.access, 'Task:Approve')
             ) {
               var passButton = h(
                 'Button',
@@ -304,10 +305,6 @@ export default {
     }
   },
   methods: {
-    changeCreatedDate: function (value) {
-      this.condition.startCreatedAt = value[0]
-      this.condition.endCreatedAt = value[1]
-    },
     goPage: function (pageNum) {
       this.search(pageNum)
     },
@@ -351,43 +348,60 @@ export default {
       this.condition.pageNum = pageNum
       this.condition.pageSize = pageSize
 
-      let query = { ...this.condition }
+      let params = this.buildRouteParams()
 
-      this.$router.replace({ name: 'taskList', query })
+      this.$router.replace({ name: 'taskList', query: params })
     },
     searchTask () {
-      let query = { ...this.$route.query }
-      if (query.pageNum) {
-        query.pageNum = parseInt(query.pageNum)
-      } else {
-        query.pageNum = 1
-      }
-      if (query.pageSize) {
-        query.pageSize = parseInt(query.pageSize)
-      } else {
-        query.pageSize = 10
-      }
+      this.condition = this.parseRouteParams()
 
-      this.condition = query
-
+      let opt = {...this.condition}
+      delete opt.createDateRange
       mcApi
         .request({
           method: 'get',
           url: '/task',
-          params: this.condition
+          params: opt
         })
         .then(response => {
           this.taskList = response.data
           this.currentItem = null
         })
     },
-    reset: function (name) {
-      this.condition = {
-        pageNum: this.condition.pageNum,
-        pageSize: this.condition.pageSize,
-        taskType: 'manual'
+    buildRouteParams () {
+      let params = { ...this.condition }
+
+      if (this.condition.createDateRange && this.condition.createDateRange[0]) {
+        params.startCreatedAt = moment(this.condition.createDateRange[0]).format('YYYY-MM-DD')
+      } else {
+        delete params.startCreatedAt
       }
-      this.temp.daterange = null
+      if (this.condition.createDateRange && this.condition.createDateRange[1]) {
+        params.endCreatedAt = moment(this.condition.createDateRange[1]).format('YYYY-MM-DD')
+      } else {
+        delete params.endCreatedAt
+      }
+      delete params.createDateRange
+      return params
+    },
+    parseRouteParams () {
+      let page = {}
+      if (this.$route.query.pageNum) {
+        page.pageNum = parseInt(this.$route.query.pageNum)
+      }
+      if (this.$route.query.pageSize) {
+        page.pageSize = parseInt(this.$route.query.pageSize)
+      }
+
+      let query = Object.assign({}, this.defaultCondition, this.$route.query, page)
+
+      if (query.startCreatedAt && query.endCreatedAt) {
+        query.createDateRange = [new Date(query.startCreatedAt), new Date(query.endCreatedAt)]
+      }
+      return query
+    },
+    reset: function () {
+      this.condition = {...this.defaultCondition}
     },
     addTask: function () {
       this.$router.push({

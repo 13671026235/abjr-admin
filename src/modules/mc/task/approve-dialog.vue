@@ -1,5 +1,5 @@
 <template>
-  <Model v-model="visible" title="拒绝原因" width="600">
+  <Modal v-model="visible" title="拒绝原因" width="600">
       <div slot="footer">
           <Button type="text" size="large" @click="close">取消</Button>
           <Button type="primary" size="large" @click="pass('form')">通过</Button>
@@ -7,10 +7,10 @@
       </div>
       <Form ref="form" :model="rejectDialog" :rules="ruleValidate" >
           <FormItem prop="auditDesc">
-              <Input  type="textarea" :rows="4" v-model="rejectDialog.auditDesc">
+              <Input  type="textarea" :rows="4" v-model="rejectDialog.auditDesc"/>
           </FormItem>
       </Form>
-  </Model>
+  </Modal>
 </template>
 
 <script>
