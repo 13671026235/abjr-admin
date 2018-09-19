@@ -46,7 +46,7 @@
             <Button type="primary" icon="ios-plus-outline" @click="addTask()">新增</Button>
             <Button type="primary" icon="ios-minus-outline" @click="deleteTask()">删除</Button>
             <div style="float:right" class="inline-space">
-                <Button type="primary" icon="ios-search" @click="search(1,condition.pageSize)">查 询</Button>
+                <Button type="primary" icon="ios-search" @click="search(1)">查 询</Button>
                 <Button icon="ios-refresh-empty" @click="reset()">重置</Button>
             </div>
         </Row>
@@ -98,10 +98,7 @@ export default {
           title: '#',
           width: 60,
           render: (h, params) => {
-            let rowNum =
-              (this.condition.pageNum - 1) * this.condition.pageSize +
-              params.index +
-              1
+            let rowNum = (this.condition.pageNum - 1) * this.condition.pageSize + params.index + 1
             return h('span', rowNum)
           }
         },
@@ -345,8 +342,12 @@ export default {
         })
     },
     search: function (pageNum, pageSize) {
-      this.condition.pageNum = pageNum
-      this.condition.pageSize = pageSize
+      if (pageNum) {
+        this.condition.pageNum = pageNum
+      }
+      if (pageSize) {
+        this.condition.pageSize = pageSize
+      }
 
       let params = this.buildRouteParams()
 
